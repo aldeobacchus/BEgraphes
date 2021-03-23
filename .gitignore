@@ -18,3 +18,6 @@ doc
 *.mapgr
 *.path
 *.tgz
+
+#On cache les mapent
+Maps
