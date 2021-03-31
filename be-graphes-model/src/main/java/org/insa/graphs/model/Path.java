@@ -29,15 +29,36 @@ public class Path {
      * 
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
-     * 
-     * @deprecated Need to be implemented.
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
         // TODO:
+        if (nodes.size() == 1) {
+        	return new Path(graph, nodes.get(0));
+        }
+        int i = 0;
+        for (Node node : nodes) {
+        	if (i == nodes.size() - 1) break;
+        	double time_min = Double.POSITIVE_INFINITY;
+        	Arc fastest_arc = null;
+        	for(Arc arc : node.getSuccessors()) {
+        		if (arc.getDestination() == nodes.get(i + 1)) {
+	        		double time_arc = arc.getMinimumTravelTime();
+	        		if (time_arc <= time_min) {
+	        			time_min = time_arc;
+	        			fastest_arc = arc;
+	        		}
+        		}
+        	}
+        	if (fastest_arc == null) throw new IllegalArgumentException(); 
+        	i += 1;
+        	arcs.add(fastest_arc);
+        }    
         return new Path(graph, arcs);
     }
+        
+    
 
     /**
      * Create a new path that goes through the given list of nodes (in order),
@@ -51,12 +72,32 @@ public class Path {
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
      * 
-     * @deprecated Need to be implemented.
      */
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        List<Arc> arcs = new ArrayList<Arc>();
+    	List<Arc> arcs = new ArrayList<Arc>();
         // TODO:
+        if (nodes.size() == 1) {
+        	return new Path(graph, nodes.get(0));
+        }
+        int i = 0;
+        for (Node node : nodes) {
+        	if (i == nodes.size() - 1) break;
+        	double length_min = Double.POSITIVE_INFINITY;
+        	Arc shortest_arc = null;
+        	for(Arc arc : node.getSuccessors()) {
+        		if (arc.getDestination() == nodes.get(i + 1)) {
+	        		double length_arc = arc.getLength();
+	        		if (length_arc <= length_min) {
+	        			length_min = length_arc;
+	        			shortest_arc = arc;
+	        		}
+        		}
+        	}
+        	if (shortest_arc == null) throw new IllegalArgumentException();
+        	i += 1;
+        	arcs.add(shortest_arc);
+        }    
         return new Path(graph, arcs);
     }
 
@@ -183,7 +224,7 @@ public class Path {
     public int size() {
         return isEmpty() ? 0 : 1 + this.arcs.size();
     }
-    
+
     /**
      * Check if this path is valid.
      * 
@@ -200,11 +241,13 @@ public class Path {
      * 
      */
     public boolean isValid() {
-    	if (this.isEmpty() == true) {
-    		return true;
+        // TODO:
+    	if (this.isEmpty() || this.size() == 1) return true;
+    	if (this.getArcs().get(0).getOrigin() != this.origin) return false;
+    	for (int i = 0; i < Math.min(2, this.getArcs().size()); i++) {
+    		if (this.getArcs().get(i).getDestination() != this.getArcs().get(i+1).getOrigin()) return false;
     	}
-    	
-    	return false;
+        return true;
     }
 
     /**
@@ -214,10 +257,11 @@ public class Path {
      * 
      */
     public float getLength() {
+        // TODO:
     	List<Arc> arcs = this.getArcs();
     	float length = 0;
-    	for (Arc a : arcs) {
-    		length = length + a.getLength();
+    	for (Arc arc : arcs) {
+    		length += arc.getLength();
     	}
         return length;
     }
@@ -232,7 +276,8 @@ public class Path {
      * 
      */
     public double getTravelTime(double speed) {
-        return this.getLength() * 3600.0 / (speed * 1000.0);
+        // TODO:
+        return this.getLength() * 3600 / (speed * 1000);
     }
 
     /**
@@ -243,12 +288,13 @@ public class Path {
      * 
      */
     public double getMinimumTravelTime() {
+        // TODO:
     	List<Arc> arcs = this.getArcs();
-    	double minTime = 0;
-    	for (Arc a : arcs) {
-    		minTime += a.getMinimumTravelTime();
+    	float time = 0;
+    	for (Arc arc : arcs) {
+    		time += arc.getMinimumTravelTime();
     	}
-        return minTime;
+        return time;
     }
 
 }
