@@ -30,7 +30,23 @@ public class Label implements Comparable<Label>{
     public void setMark() {
     	this.marque = true;
     }
-
+    
+    public Arc getFather() {
+    	return this.pere;
+    }
+    
+    public void setFather(Arc father) {
+    	this.pere = father;
+    }
+    
+    public boolean getMark() {
+    	return this.marque;
+    }
+    
+    public Node getNode() {
+    	return this.current_sommet;
+    }
+    
 	@Override
 	public int compareTo(Label o) {		
 		return Float.compare(this.cost, o.cost);

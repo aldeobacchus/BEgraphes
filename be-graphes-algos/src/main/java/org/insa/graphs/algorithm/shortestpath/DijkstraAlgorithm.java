@@ -2,7 +2,10 @@ package org.insa.graphs.algorithm.shortestpath;
 
 import org.insa.graphs.algorithm.utils.*;
 import org.insa.graphs.model.*;
+import org.insa.graphs.algorithm.AbstractSolution.Status;
 import java.util.HashMap;
+import java.util.Collections;
+import java.util.ArrayList;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
@@ -32,10 +35,64 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         etiquettes.get(data.getOrigin()).setCost(0);
         tas.insert(etiquettes.get(data.getOrigin()));
         
+        boolean end = false;// true si on est arrivé a destination
+        
         //tant qu'il existe des sommets non marqués
-        while ( tas.isEmpty() == false) {
+        while ( tas.isEmpty() == false && !end) {
+        	Label min = tas.findMin();//Extraction du minimum du tas
+        	min.setMark();//Marquage du minimum
+        	tas.remove(min);
+        	
+        	if (min.getNode() == data.getDestination()){
+        		end = true;
+        		continue;
+        	}
+        	
+        	for (Arc arc : min.getNode().getSuccessors()) {//Pour tout les y successeurs de x
+        		
+        		if (!data.isAllowed(arc)) {//on saute cette iteration si le chemin qu'on compte emprunter n'est pas autorisé
+        			continue;
+        		}
+        		
+        		Node succ = arc.getDestination();
+        		Label labelSucc = etiquettes.get(succ);
+        		
+        		if (!labelSucc.getMark()) {//si ces successeurs sont non marqués
+            	
+        			float newCost = (float) (min.getCost()+data.getCost(arc));
+
+        			if (newCost < labelSucc.getCost()) {
+        				
+        				labelSucc.setCost(newCost);
+        				tas.insert(labelSucc);
+        				labelSucc.setFather(arc);
+        			}
+        		}
+        	}
         	
         }
+        
+        Label dest = etiquettes.get(data.getDestination());
+        
+        //on test si la destination a un predecesseur ou non
+        if (dest.getFather() == null) {	
+        	solution = new ShortestPathSolution(data, Status.INFEASIBLE);
+        }
+        else{//on va creer la liste a partir des peres puis l'inverser
+        	ArrayList<Arc> ListArcPere = new ArrayList<Arc>();
+        	Arc arc =  dest.getFather();
+        	
+        	while (arc != null) {
+        		ListArcPere.add(arc);
+        		arc = etiquettes.get(arc.getOrigin()).getFather();
+        	}
+        	
+        	//on retourne la liste
+        	Collections.reverse(ListArcPere);
+        	
+        	solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(data.getGraph(), ListArcPere));
+        }
+        
         
         return solution;
     }
