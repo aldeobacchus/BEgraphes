@@ -34,6 +34,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         //On declare le cout a l'origine a 0 et on l'insere dans le tas
         etiquettes.get(data.getOrigin()).setCost(0);
         tas.insert(etiquettes.get(data.getOrigin()));
+        notifyOriginProcessed(data.getOrigin());//observer
         
         boolean end = false;// true si on est arrivé a destination
         
@@ -41,10 +42,12 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         while ( tas.isEmpty() == false && !end) {
         	Label min = tas.findMin();//Extraction du minimum du tas
         	min.setMark();//Marquage du minimum
+        	notifyNodeReached(min.getNode());
         	tas.remove(min);
         	
         	if (min.getNode() == data.getDestination()){
         		end = true;
+        		notifyDestinationReached(min.getNode());
         		continue;
         	}
         	
@@ -56,6 +59,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		
         		Node succ = arc.getDestination();
         		Label labelSucc = etiquettes.get(succ);
+        		notifyNodeReached(succ);
         		
         		if (!labelSucc.getMark()) {//si ces successeurs sont non marqués
             	
