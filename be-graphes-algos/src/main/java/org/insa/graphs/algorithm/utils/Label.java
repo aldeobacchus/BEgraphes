@@ -23,6 +23,10 @@ public class Label implements Comparable<Label>{
         return this.cost;
     }
     
+    public float getTotalCost(){
+    	return this.cost;
+    }
+    
     public void setCost(float cost) {
     	this.cost = cost;
     }
@@ -49,7 +53,7 @@ public class Label implements Comparable<Label>{
     
 	@Override
 	public int compareTo(Label o) {		
-		return Float.compare(this.cost, o.cost);
+		return Float.compare(this.getTotalCost(), o.getTotalCost());
 	}
 
     

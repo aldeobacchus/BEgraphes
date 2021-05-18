@@ -25,7 +25,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         HashMap<Node, Label> etiquettes = new HashMap<Node, Label>();
         
         for (Node n : data.getGraph().getNodes()) {
-        	etiquettes.put(n, new Label(n, Float.POSITIVE_INFINITY,null));
+        	etiquettes.put(n, newLabel(n, Float.POSITIVE_INFINITY,null, data));
         }
         
         //On déclare le tas binaire qui va contenir les label parcouru
@@ -100,5 +100,9 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         
         return solution;
     }
-
+    
+    protected Label newLabel(Node sommet, float cost, Arc pere,ShortestPathData data) {
+    	return new Label(sommet, cost, pere);
+    }
+	
 }
