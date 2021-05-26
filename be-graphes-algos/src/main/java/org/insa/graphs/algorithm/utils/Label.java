@@ -4,13 +4,13 @@ import org.insa.graphs.model.*;
 
 public class Label implements Comparable<Label>{
    
-    private Node current_sommet;
+    protected Node current_sommet;
 
-    private boolean marque;
+    protected boolean marque;
 
-    private float cost; 
+    protected float cost; 
 
-    private Arc pere;
+    protected Arc pere;
 
     public Label(Node current_Sommet, float cost, Arc pere){
         this.current_sommet = current_Sommet; 

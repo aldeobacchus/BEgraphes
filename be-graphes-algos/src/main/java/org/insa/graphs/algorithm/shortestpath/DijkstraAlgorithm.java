@@ -62,14 +62,17 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         		notifyNodeReached(succ);
         		
         		if (!labelSucc.getMark()) {//si ces successeurs sont non marqués
-            	
-        			float newCost = (float) (min.getCost()+data.getCost(arc));
-
+        			
+        			//le nouveau cout depuis min vers succ est cout de min+cout de l'arc
+        			
+        			float newCost = (float) (min.getCost()+this.getArcCost(arc));
+        			
+        			//si ce nouveau cout est inferieur au cout actuel de succ :
         			if (newCost < labelSucc.getCost()) {
         				
-        				labelSucc.setCost(newCost);
-        				tas.insert(labelSucc);
-        				labelSucc.setFather(arc);
+        				labelSucc.setCost(newCost);//on remplace le cout de succ
+        				tas.insert(labelSucc);	
+        				labelSucc.setFather(arc);//le nouveau predecesseur(father) de succ est min et l'arc qui les relies est "arc"
         			}
         		}
         	}
@@ -105,4 +108,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     	return new Label(sommet, cost, pere);
     }
 	
+    protected float getArcCost(Arc arc) {
+    	return (float) data.getCost(arc);
+    }
 }
